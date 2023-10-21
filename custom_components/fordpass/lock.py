@@ -14,7 +14,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     entry = hass.data[DOMAIN][config_entry.entry_id][COORDINATOR]
 
     lock = Lock(entry)
-    if lock.coordinator.data["metrics"]["doorLockStatus"] and lock.coordinator.data["metrics"]["doorLockStatus"][0]["value"] != "ERROR":
+    if "doorLockStatus" in lock.coordinator.data["metrics"] and lock.coordinator.data["metrics"]["doorLockStatus"] and lock.coordinator.data["metrics"]["doorLockStatus"][0]["value"] != "ERROR":
         async_add_entities([lock], False)
     else:
         _LOGGER.debug("Ford model doesn't support remote locking")
@@ -63,7 +63,7 @@ class Lock(FordPassEntity, LockEntity):
         """Determine if the lock is locked."""
         if self.coordinator.data["metrics"] is None or self.coordinator.data["metrics"]["doorLockStatus"] is None:
             return None
-        return self.coordinator.data["metrics"]["doorLockStatus"][0]["value"] == "LOCKED"
+        return self.coordinator.data["metrics"]["doorLockStatus"][0]["value"] == "LOCKED" or self.coordinator.data["metrics"]["doorLockStatus"][0]["value"] == "DOUBLE_LOCKED"
 
     @property
     def icon(self):
