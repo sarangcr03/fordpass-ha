@@ -60,13 +60,13 @@ class Lock(FordPassEntity, LockEntity):
         self._attr_is_unlocking = False
         self.async_write_ha_state()
 
-@property
-def is_locked(self):
-    """Determine if the lock is locked."""
-    all_doors_status = next((item for item in self.coordinator.data["metrics"]["doorLockStatus"] if item["vehicleDoor"] == "ALL_DOORS"), None)
-    if not all_doors_status:
-        return None
-    return all_doors_status["value"] == "LOCKED" or all_doors_status["value"] == "DOUBLE_LOCKED"
+    @property
+    def is_locked(self):
+        """Determine if the lock is locked."""
+        all_doors_status = next((item for item in self.coordinator.data["metrics"]["doorLockStatus"] if item["vehicleDoor"] == "ALL_DOORS"), None)
+        if not all_doors_status:
+            return None
+        return all_doors_status["value"] == "LOCKED" or all_doors_status["value"] == "DOUBLE_LOCKED"
 
     @property
     def icon(self):
